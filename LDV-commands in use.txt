@@ -1,0 +1,44 @@
+Set,controller,0,Remote,LLO
+Set,controller,0,Remote,Local
+
+GetDevInfo,controller,0,Name
+GetDevInfo,controller,0,Version
+GetDevInfo,controller,0,PowerUp
+GetDevInfo,controller,0,Remote
+
+
+Get,controller,0,Name
+Get,controller,0,Version
+Get,controller,0,PowerUp
+Get,controller,0,Remote
+
+
+//sensorhead settings
+Set, SensorHead,0,AutoFocus, Search
+Get, SensorHead,0,AutoFocus
+Get, SensorHead,0,AutoFocusResult
+
+
+//decoder settings
+Get,VeloDec,0,Name // VD-05 AUX
+Get,VeloDec,1,Name // VD09
+
+Set,VeloDec,1,Range,5 mm/s/V
+Set,VeloDec,1,Range,10 mm/s/V
+Set,VeloDec,1,Range,20 mm/s/V
+Set,VeloDec,1,Range,50 mm/s/V
+Set,VeloDec,1,Range,200 mm/s/V
+
+Get,VeloDec,1,Range
+
+
+ //use this to search the ComPort. If response then well and good , if no response try next COM port.
+If no response from any COM port then error widnow.
+Get,controller,0,Name
+
+No need to set to remote.
+Use the selected COM PORT -> write the decoder ranges -> initiate AutoFocus
+
+
+
+

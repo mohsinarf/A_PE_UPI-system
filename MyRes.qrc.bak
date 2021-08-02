@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/save.png</file>
+        <file>images/KAISTlogo.jpg</file>
+        <file>images/OESLlogo.jpg</file>
+        <file>images/Band-pass-filter-range.gif</file>
+    </qresource>
+</RCC>
