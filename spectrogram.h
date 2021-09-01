@@ -18,8 +18,6 @@
 #include <QElapsedTimer>
 #include <qwt_text_label.h>
 #include <QMessageBox>
-//#include "aviUtil.h"
-
 
 class ColorMapGrey: public QwtLinearColorMap
 {
@@ -96,11 +94,9 @@ public:
                     text = QString::number(shortframePointer[((int)(pos.x())+(int)(pos.y()*x_length))]);
             }
         }
-
         text.setBackgroundBrush( QBrush( bg ) );
         return text;
     }
-
 };
 
 class GraphZoomer: public QwtPlotZoomer
@@ -130,9 +126,7 @@ public:
                text = QwtPlotZoomer::trackerTextF(Curve->sample(index));
             }
         }
-
         text.setBackgroundBrush( QBrush( bg ) );
-
         return text;
     }
 };
@@ -185,7 +179,6 @@ public:
                 return((double)(intframePointer[((x_pos)+(y_pos*x_length))])); // change a straight frame to 2D frame
                 else
                 return((double)(shortframePointer[((x_pos)+(y_pos*x_length))])); // change a straight frame to 2D frame
-
         }
         else
         { // just make a pattern in case the data pointer in NULL
@@ -206,7 +199,6 @@ public:
         setLabelRotation( 0 );
         setLabelAlignment( Qt::AlignLeft | Qt::AlignVCenter );
         setSpacing( 10 );
-
     }
 
     virtual QwtText label( double value ) const
@@ -254,12 +246,10 @@ public Q_SLOTS:
     void selectPointForPolygon( QPointF Pos );
     void clearPolyGon( QPointF Pos );
 
-
 private:
     QwtPlotSpectrogram *d_spectrogram;
     SpectZoomer* zoomer;
     MyScaleDraw *scaleDrawXaxis, *scaleDrawYaxis;
-
     structScan *scanInfoPtr;
     short framePointer;
     mydata *data;
@@ -277,11 +267,7 @@ private:
     int imgHeight,imgWidth;
     QPolygonF pointList;
     QwtPlotCurve *boundaryCurve;
-
-
     void showSpectrogram( bool on );
-    //void setAlpha( int );
-
     void setcolorbar();
     void go_annimation();
     void stopper( int stopper );
