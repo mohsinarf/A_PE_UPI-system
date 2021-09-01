@@ -17,7 +17,6 @@ public:
 
 
 public Q_SLOTS:
-    //void UpdateCurve(void *y_pt, bool isShort=0, bool vertMarkerEnable=0, QString Title=NULL);
     void UpdateCurveOsciDouble(double *y_pt);
     void UpdateCurve(short *y_pt, QString Title=NULL);
     void updateVertMarker(int markerPos);
