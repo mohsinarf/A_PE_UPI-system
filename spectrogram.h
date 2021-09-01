@@ -86,15 +86,11 @@ public:
         QColor bg( Qt::white );
         bg.setAlpha( 200 );
         QwtText text;
-        //text = QwtPlotZoomer::trackerTextF( pos * scanInterval );
         if ( (isIntData == 0 &&shortframePointer!=NULL ) || (isIntData == 1 &&intframePointer!=NULL ))
         {
             if (pos.x() >= 0 && pos.y() >= 0)
             {
                 if (isIntData)
-//                    text = QString::number(intframePointer[((int)(pos.y())+(int)(pos.x()*y_length))]);
-//                    else
-//                    text = QString::number(shortframePointer[((int)(pos.y())+(int)(pos.x()*y_length))]);
                     text = QString::number(intframePointer[((int)(pos.x())+(int)(pos.y()*x_length))]);
                     else
                     text = QString::number(shortframePointer[((int)(pos.x())+(int)(pos.y()*x_length))]);
@@ -182,25 +178,9 @@ public:
     {
         int x_pos = static_cast<int>(x);
         int y_pos = static_cast<int>(y);
-        //double ReturnValue = 0;
-/*
-        // this is just for bench marking and should be removed later
-        static int paintedPixels;
-        if (x == 0 && y == 0)
-        {
-            qDebug()<<"virtual double value - Started paint";
-            const_cast <mydata *>(this)->timer.start();
-            paintedPixels = 0;
-        }
-*/
+
         if ( (isIntData == 0 && shortframePointer!=NULL ) || (isIntData == 1 &&intframePointer!=NULL ))
         {
-//            if (isIntData)
-//                return((double)(intframePointer[((y_pos)+(x_pos*y_length))])); // change a straight frame to 2D frame
-//                else
-//                return((double)(shortframePointer[((y_pos)+(x_pos*y_length))])); // change a straight frame to 2D frame
-
-
             if (isIntData)
                 return((double)(intframePointer[((x_pos)+(y_pos*x_length))])); // change a straight frame to 2D frame
                 else
@@ -214,97 +194,7 @@ public:
             else
                 return(10000);
         }
-/*
-        // this is just for bench marking and should be removed later
-        if ( (paintedPixels++) == 100000)
-            qDebug() << "virtual double value - painted the whole frame in (msec) : "<<timer.elapsed();
-*/
-        //return ReturnValue;
     }
-/*
- * //Median Filter Coding
-
-    //FiltType = 1: median filter
-    //FiltType = 2: Spatial filter
-    //KrnlSize = 3 5 7 -> //KrnlRadius = 1 2 3
-    inline short imageFilterOpt(char FiltType, char krnlRadius, int x_pos, int y_pos) const
-    {
-        int top,bottom,left,right,yKernel,xKernel,vectorIndex;
-        short kernelData[50];
-
-        if ( (x_pos < krnlRadius) ||
-             (y_pos < krnlRadius) ||
-             (y_pos >= (y_length-krnlRadius)) ||
-             (x_pos >= (x_length-krnlRadius)))
-        {
-            return framePointer[((x_pos)+(y_pos*x_length))]; // no filtering at the borders
-        }
-
-        top     = y_pos-krnlRadius;
-        bottom  = y_pos+krnlRadius;
-        left    = x_pos-krnlRadius;
-        right   = x_pos+krnlRadius;
-
-        vectorIndex = 0;
-
-        for (yKernel = top; yKernel<=bottom; yKernel++)
-        {
-            for (xKernel = left; xKernel<=right; xKernel++)
-            {
-                kernelData[vectorIndex++] = framePointer[xKernel+yKernel*x_length];
-            }
-        }
-
-        if (krnlRadius == 1)
-            return (optMed9(&kernelData[0]));
-        if (krnlRadius == 2)
-            return (optMed25(&kernelData[0]));
-        if (krnlRadius == 3)
-            return (optMed49(&kernelData[0]));
-    }
-
-
-
-    //FiltType = 1: median filter
-    //FiltType = 2: Spatial filter
-    inline short imageFilter(char FiltType, char krnlSz, int x_pos, int y_pos) const
-    {
-        short radius = ((krnlSz-1)/2); //size 3 radius -> 1
-        int top,bottom,left,right,yKernel,xKernel,vectorIndex,medianIndex = (krnlSz*krnlSz)/2;
-        QVector<short> kernelVector;
-        kernelVector.reserve(krnlSz*krnlSz);
-
-        if ( (x_pos < radius) ||
-             (y_pos < radius) ||
-             (y_pos >= (y_length-radius)) ||
-             (x_pos >= (x_length-radius)))
-        {
-            return framePointer[((x_pos)+(y_pos*x_length))]; // no filtering at the borders
-        }
-
-        top     = max(y_pos-radius,0);
-        bottom  = min(y_pos+radius,y_length-1);
-
-        left    = max(x_pos-radius,0);
-        right   = min(x_pos+radius,x_length);
-
-        vectorIndex = 0;
-
-        for (yKernel = top; yKernel<=bottom; yKernel++)
-        {
-            for (xKernel = left; xKernel<=right; xKernel++)
-            {
-                kernelVector.insert(vectorIndex++,framePointer[xKernel+yKernel*x_length]);
-            }
-        }
-        if(kernelVector.size() < (krnlSz*krnlSz))
-        {
-            qWarning("imageFilter - Kernel not fully overlapped - FilterType: %d, krnlSz: %d",FiltType,krnlSz);
-        }
-        qSort(kernelVector);
-        return (kernelVector[medianIndex]);
-    }
-    */
 };
 
 class MyScaleDraw: public QwtScaleDraw
@@ -313,11 +203,6 @@ public:
     float scanInterval;
     MyScaleDraw()
     {
-
-        //setTickLength( QwtScaleDiv::MajorTick, 10 );
-        //setTickLength( QwtScaleDiv::MinorTick, 2 );
-        //setTickLength( QwtScaleDiv::MediumTick, 5 );
-
         setLabelRotation( 0 );
         setLabelAlignment( Qt::AlignLeft | Qt::AlignVCenter );
         setSpacing( 10 );
