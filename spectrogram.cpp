@@ -4,8 +4,6 @@
 #define WIDTHOFYAXISANDCOLOURBAR            150
 #define WIDTHOFYAXISANDCOLOURBARNOTITLE     124
 #define HEIGHTOFBOTTOMXAXIS                 40
-
-
 #define DSTBWSPECT  160
 #define DSTBWSPECTPOTRAIT  40
 #define CANSIZE     600
@@ -21,9 +19,6 @@ spectrogram::spectrogram(QWidget *parent, structScan * scanInfoPtr_arg ,
     int x_length = (scanInfoPtr->scanWidth/scanInfoPtr->scanInterval)+1;
     x_length = y_length = 51;
     this->enableAxis(QwtPlot::yLeft, true);
-
-    //this->enableAxis(QwtPlot::xTop, true);
-    //this->enableAxis(QwtPlot::xBottom, false);
     scaleDrawXaxis = new MyScaleDraw;
     scaleDrawYaxis = new MyScaleDraw;
     if (scanInfoPtr->enableTT == true)
@@ -34,7 +29,6 @@ spectrogram::spectrogram(QWidget *parent, structScan * scanInfoPtr_arg ,
 
     QwtPlotPicker* picker=new QwtPlotPicker(canvas());
     picker->setStateMachine(new QwtPickerClickPointMachine);
-    //picker->setRubberBand( QwtPicker::CrossRubberBand );
     picker->setMousePattern(QwtPicker::MouseSelect1,Qt::MiddleButton);
     connect(picker,SIGNAL(selected(QPointF)),SLOT(selectPoint(QPointF)));
 
@@ -47,21 +41,9 @@ spectrogram::spectrogram(QWidget *parent, structScan * scanInfoPtr_arg ,
     data = new mydata(500,y_length,x_length);
     d_spectrogram->setData(data);
     d_spectrogram->attach( this );
-/*
-    QList<double> contourLevels;
-    for ( double level = 0.5; level < 10.0; level += 1.0 )
-        contourLevels += level;
-    d_spectrogram->setContourLevels( contourLevels );
-*/
     setcolorbar();
 
     plotLayout()->setAlignCanvasToScales( true );
-
-    // LeftButton for the zooming
-    // MidButton for the panning
-    // RightButton: zoom out by 1
-    // Ctrl+RighButton: zoom out to full size
-
     zoomer = new SpectZoomer( canvas() );
     zoomer->setMousePattern( QwtEventPattern::MouseSelect2,
         Qt::RightButton, Qt::ControlModifier );
@@ -72,14 +54,8 @@ spectrogram::spectrogram(QWidget *parent, structScan * scanInfoPtr_arg ,
     panner->setAxisEnabled( QwtPlot::yRight, false );
     panner->setMouseButton( Qt::MidButton );
 
-
     // Avoid jumping when labels with more/less digits
     // appear/disappear when scrolling vertically
-/*
-    const QFontMetrics fm( axisWidget( QwtPlot::yLeft )->font() );
-    QwtScaleDraw *sd = axisScaleDraw( QwtPlot::yLeft );
-    sd->setMinimumExtent( fm.width( "100.00" ) );
-*/
     const QColor c( Qt::darkBlue );
     zoomer->setRubberBandPen( c );
     zoomer->setTrackerPen( c );
@@ -94,9 +70,6 @@ spectrogram::spectrogram(QWidget *parent, structScan * scanInfoPtr_arg ,
 
     leftPos = leftPosArg;
     topPos  = topPosArg;
-
-    //width   = widthArg;
-    //height  = heightArg;
 
     width    = CANSIZE + WIDTHOFYAXISANDCOLOURBARNOTITLE;
     height   = CANSIZE + HEIGHTOFBOTTOMXAXIS;
@@ -127,8 +100,6 @@ spectrogram::spectrogram(QWidget *parent, structScan * scanInfoPtr_arg ,
     boundaryCurve->setPaintAttribute( QwtPlotCurve::ClipPolygons, false );
     boundaryCurve->setPaintAttribute( QwtPlotCurve::FilterPoints, true );
     boundaryCurve->setSymbol( new QwtSymbol( QwtSymbol::Diamond,Qt::gray, c, QSize( 8, 8 ) ) );
-    //d_curve->setData( new CurveData() );
-    //d_curve->setData
     boundaryCurve->attach( this );
 
     QwtPlotPicker* pickerPoly=new QwtPlotPicker(canvas());
@@ -179,8 +150,6 @@ void spectrogram::selectPointForPolygon( QPointF Pos )
         pointList.insert(pointList.size()-1,Pos);
     }
 
-    //pointList.append(Pos);
-
     qDebug() << "selectPoint - Float("<<Pos.x() <<","<< Pos.y()<<")"
              <<"Int("<< PosXInt << PosYInt <<")"
             <<"Pos.toPoint()"<<Pos
@@ -226,13 +195,8 @@ void spectrogram::selectPoint( QPointF Pos )
     int x_length = (scanInfoPtr->scanWidth/scanInfoPtr->scanInterval)+1;
     QPointF intPt;
 
-   // Pos = Pos*info_Inspection.scanInterval.toFloat();
     PosXInt = Pos.x();
     PosYInt = Pos.y();
-
-    //SelectedImpingePoint = (x_length) * ((y_length - 1)  - PosYInt)  + (PosXInt);
-    //SelectedImpingePoint = (ScanWidth-1) * ((ScanHeight-2*(info_Inspection.scanInterval.toFloat())) - PosYInt)  + (PosXInt+1);
-    //SelectedImpingePoint = (x_length) * (PosYInt)  + (PosXInt);
     SelectedImpingePoint =   (PosYInt)  + (y_length)*(PosXInt);
 
     if ( PosXInt >= 0 && PosYInt >= 0 && PosXInt < x_length && PosYInt < y_length)
@@ -286,14 +250,6 @@ void spectrogram::updateAxisXY(int enlargeFactor)
     if (enlargeEnabled)
     {
         double enlargeMultiplier = 1.0;
-/*
-        if      (enlargeFactor   >   0)
-            enlargeMultiplier = enlargeFactor+1;
-        else if (enlargeFactor  <   0)
-            enlargeMultiplier = -1*((double)1/(double)(enlargeFactor-1));
-
-        double enlargeMultiplier = pow(2,enlargeFactor);
-*/
         enlargeMultiplier = pow(2,enlargeFactor);
         int inchWidth = (x_length/25.4)*(logicalDpiX()*1.41);
         int inchHeight = (y_length/25.4)*(logicalDpiY()*1.41);
@@ -325,17 +281,11 @@ void spectrogram::updateAxisXY(int enlargeFactor)
         if (y_length<x_length)
         {
             if (HtoWratio >= 0.5) // 0.625 coz inverse is clean
-            {   //only decrease the height
-                //newHeight = HtoWratio*height;
-                //setGeometry(QRect(leftPos,topPos, width,newHeight ));
+            {   
                 newHeight   = (HtoWratio)*(CANSIZE) + (HEIGHTOFBOTTOMXAXIS);
             }
             else
             {
-                /*
-                newWidth    = (0.5)*(WtoHratio)*(CANSIZE + WIDTHOFYAXISANDCOLOURBARNOTITLE);
-                newHeight   = (0.5)*(CANSIZE + HEIGHTOFBOTTOMXAXIS);
-                */
                 newWidth    = (0.5)*(WtoHratio)*(CANSIZE) + (WIDTHOFYAXISANDCOLOURBARNOTITLE);
                 newHeight   = (0.5)*(CANSIZE) + (HEIGHTOFBOTTOMXAXIS);
             }
@@ -352,19 +302,10 @@ void spectrogram::updateAxisXY(int enlargeFactor)
                 newHeight   = (0.9)*(HtoWratio)*(CANSIZE) + (HEIGHTOFBOTTOMXAXIS);
             }
         }
-        /*
-        else if (y_length == x_length)
-        {
-            newWidth    = CANSIZE + WIDTHOFYAXISANDCOLOURBARNOTITLE;
-            newHeight   = CANSIZE + HEIGHTOFBOTTOMXAXIS;
-        }
-        */
         setGeometry(QRect(leftPos,topPos, newWidth, newHeight));
     }
     if (noOfSlaves > 0 && !enlargeEnabled)//master sets the container below itself
     {
-        //if ((y_length+100)<(x_length)) //slave below the master
-        //if(HtoWratio<0.75)
         if(newWidth > (CANSIZE + WIDTHOFYAXISANDCOLOURBARNOTITLE) ) //square aspect widthm= CANSIZE + WIDTHOFYAXISANDCOLOURBARNOTITLE
         {
             container->setGeometry(QRect(leftPos,topPos, newWidth, (noOfSlaves+1)*(newHeight+DSTBWSPECTPOTRAIT)-DSTBWSPECTPOTRAIT ));
@@ -377,20 +318,6 @@ void spectrogram::updateAxisXY(int enlargeFactor)
             container->updateGeometry();
             emit placeSlave(leftPos+newWidth+DSTBWSPECT, topPos);
         }
-        /*
-        else if (x_length<y_length)
-        {
-            container->setGeometry(QRect(leftPos,topPos, (noOfSlaves+1)*(newWidth+DSTBWSPECT)-DSTBWSPECT, newHeight ));
-            container->updateGeometry();
-            emit placeSlave(leftPos+newWidth+DSTBWSPECT, topPos);
-        }
-        else if (x_length==y_length)
-        {
-            container->setGeometry(QRect(leftPos,topPos, (noOfSlaves+1)*(width+DSTBWSPECT)-DSTBWSPECT, newHeight ));
-            container->updateGeometry();
-            emit placeSlave(leftPos+width+DSTBWSPECT, topPos);
-        }
-        */
     }
 
     this->imgHeight = newHeight;
@@ -426,65 +353,15 @@ void spectrogram::showSpectrogram( bool on )
     replot();
 }
 
-/*
-void Plot::setAlpha( int alpha )
-{
-    fnum=alpha;
-    d_spectrogram->setData( new mydata(movie_type,fnum,dial) );
-    d_spectrogram->attach( this );
-    //QTest::qWait(1);
-    replot();
-}
-*/
-
 void spectrogram::setIntensity( int alpha )
 {
     data->intensity = alpha;
     data->updateDataAxis();
     setcolorbar();
     plotLayout()->setAlignCanvasToScales( true );
-    //d_spectrogram->attach( this ); // not needed
     replot();
 }
 
-/*
-void Plot::stopper( int stopper )
-{
-    stop=stopper;
-}
-*/
-
-// has to come from data processor
-/*
-void Plot::go_annimation()
-{
-//    for(fnum =0; fnum < 500 ; fnum++)
-//    {
-//        char file[35];
-//        QwtPlotRenderer renderer;
-//        QSizeF t3(13, 10);
-//        t3.scale(130, 130, Qt::KeepAspectRatioByExpanding);
-
-//        setAlpha(fnum);
-//        QTest::qWait(1);
-//        qDebug()<<fnum;
-//        sprintf(file, "c:\\mydata\\uwpi%d.bmp", fnum);
-//        renderer.renderDocument(this,file,t3,85);
-//     }
-//    SaveMovie();
-    for(fnum =0; fnum < 500 ; fnum++)
-    {
-        setAlpha(fnum);
-        QTest::qWait(1);
-    qDebug()<<fnum;
-        if (stop==1)
-        {stop =0;
-            break;}
-    }
-    fnum =84;
-    setAlpha(fnum);
-}
-*/
 void spectrogram::toggleUWPIGreyScale(bool isGreyForUWPI)
 {
     this->isGreyForUWPI = isGreyForUWPI;
@@ -497,7 +374,6 @@ void spectrogram::setcolorbar()
     const QwtInterval zInterval = d_spectrogram->data()->interval( Qt::ZAxis );
     // A color bar on the right axis
     QwtScaleWidget *rightAxis = axisWidget( QwtPlot::yRight );
-    //rightAxis->setTitle( "Intensity Map" );
     rightAxis->setColorBarEnabled( true );
 
     if (this->isIntData == false)
@@ -511,7 +387,6 @@ void spectrogram::setcolorbar()
         {
             rightAxis->setColorMap( zInterval, new ColorMap()  );
             d_spectrogram->setColorMap( new ColorMap() );
-            //data
         }
     }
     else
@@ -578,8 +453,6 @@ void spectrogram::savePlot(QString outfolderpath)
             scaleWindowSize = this->imgHeight/hReductionRatio;
         }
 
-        //fontReductionRatio = Ratio*(float)(200.0/(float)scaleWindowSize);
-
         fontReductionFactor = 1;
         if (Ratio>2 && Ratio < 4)
             fontReductionFactor = 1.5;
@@ -587,14 +460,6 @@ void spectrogram::savePlot(QString outfolderpath)
             fontReductionFactor = 1.75;
     }
 
-    /*
-    origFontSizeTitle = this->titleLabel()->text().font().pointSizeF();
-    tempFont.setPointSize(origFontSizeTitle/reductionRatio+2);
-
-    tempText = this->titleLabel()->text();
-    tempText.setFont(tempFont);
-    this->titleLabel()->setText(tempText);
-*/
     for (int i = 0;i<3;i++)
     {
         origFontSize[i] = this->axisFont(i).pointSizeF();
@@ -616,14 +481,6 @@ void spectrogram::savePlot(QString outfolderpath)
     t3.scale(scaleWindowSize, scaleWindowSize,Qt::KeepAspectRatio);
 
     renderer.renderDocument(this,outfolderpath+".jpeg","jpeg",t3,500);
-    //renderer.renderDocument(this,outfolderpath+".bmp","bmp",t3,500); // bigger file but better results
-
-    /*
-    tempFont.setPointSize(origFontSizeTitle);
-    //tempText = this->titleLabel()->text();
-    tempText.setFont(tempFont);
-    this->titleLabel()->setText(tempText);
-   */
 
     for (int i = 0;i<3;i++)
     {
@@ -662,8 +519,6 @@ void spectrogram::setMovieImageSize()
             scaleWindowSize = this->imgWidth/wReductionRatio;
         }
 
-        //fontReductionRatio = Ratio*(float)(200.0/(float)scaleWindowSize);
-
         fontReductionFactor = 1;
         if (Ratio>2 && Ratio < 4)
             fontReductionFactor = 1.05;
@@ -682,8 +537,6 @@ void spectrogram::setMovieImageSize()
             hReductionRatio = this->imgWidth/30;
             scaleWindowSize = this->imgHeight/hReductionRatio;
         }
-
-        //fontReductionRatio = Ratio*(float)(200.0/(float)scaleWindowSize);
 
         fontReductionFactor = 1;
         if (Ratio>2 && Ratio < 4)
@@ -720,18 +573,7 @@ void spectrogram::setMovieImageSize()
     imageForMovie->setDotsPerMeterY( dotsPerMeter );
     imageForMovie->fill( QColor( Qt::white ).rgb() );
 
-    //QPixmap pixMapCur(imageRect.size());
     pixMapCurptr = new QPixmap (imageRect.size());
-    //scaled(imageRect.width(),imageRect.height(),Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-/*
-    if (painterForMovie!=NULL)
-    {
-        delete painterForMovie;
-        painterForMovie = NULL;
-    }
-*/
-    //painterForMovie = new QPainter( imageForMovie );
-
     painterForMovie = new QPainter( pixMapCurptr );
 
 }
@@ -755,11 +597,10 @@ QPixmap spectrogram::getPlotPixmap(int frameNum)
 
 void spectrogram::SaveMovie(QString outfolderpath)
 {
-    /*
     QString file("demo.avi");
     QByteArray fileArr = file.toUtf8();
     HBITMAP hbm;
-    //
+
     HAVI avi = CreateAvi(fileArr.toStdString().c_str(),100,NULL);
     QList<QPixmap> images;
     for (int frame=0; frame < images.size(); frame++) {
@@ -767,7 +608,6 @@ void spectrogram::SaveMovie(QString outfolderpath)
         AddAviFrame(avi,hbm);
     }
     CloseAvi(avi);
-    */
 }
 
 void spectrogram::updateData(void *framePointer, QString title, bool isIntData)
@@ -788,9 +628,6 @@ void spectrogram::updateData(void *framePointer, QString title, bool isIntData)
         this->setTitle(NULL);
     }
 
-
-    //this->setTitle(this->title);
-
     if (this->data->isIntData            = isIntData)
         this->data->intframePointer      = (int*)framePointer;
     else
@@ -810,8 +647,3 @@ void spectrogram::updateData(void *framePointer, QString title, bool isIntData)
     repaint();
 }
 
-/*
- * x_length 101 y_length 101 canvasWidth 400 396 canvasHeight 360 356 //colourBar
-x_length 101 y_length 101 canvasWidth 426 canvasHeight 360 // no titleforColourBar
-x_length 101 y_length 101 canvasWidth 510 506 canvasHeight 360 356 //noColourBar
-*/
