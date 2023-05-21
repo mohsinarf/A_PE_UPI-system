@@ -2,8 +2,7 @@
 This is the README file for the project [Project Name]. This project is developed using the Qt framework, and it provides a detailed description of the project, its purpose, installation instructions, usage guidelines, and other relevant information.
 
 ## Table of Contents
-- [A\_PE\_UPI system](#a_pe_upi-system)
-  - [Table of Contents](#table-of-contents)
+
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
   - [Usage](#usage)
