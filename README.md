@@ -27,7 +27,7 @@ To install and set up the project locally, follow these steps:
 1. Clone the repository:
 
 ```
-   $ git clone https://github.com/your-repo/project.git
+   $ git clone https://github.com/mohsinarf/A_PE_UPI-system.git
    $ cd project
    ```
 2. Build the project using qmake and make:
