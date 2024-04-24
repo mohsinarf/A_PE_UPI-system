@@ -2,7 +2,6 @@
 This is the README file for the project Angular scan pulse echo ultra propagation imagaing system. This project is developed using the Qt framework, and it provides a detailed description of the project, its purpose, installation instructions, usage guidelines, and other relevant information.
 <img src="./images/Picture1.jpg" width="250" />
 
-!["User_Interface1"](./images/Picture1.jpg =20x)
 
 
 
